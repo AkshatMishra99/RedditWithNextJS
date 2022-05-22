@@ -1,0 +1,5 @@
+{
+  "prettier.tabWidth": 2,
+  "editor.autoIndent": "full",
+  "editor.tabSize": 2
+}
