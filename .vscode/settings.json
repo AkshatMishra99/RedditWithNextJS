@@ -1,5 +1,6 @@
 {
   "prettier.tabWidth": 2,
   "editor.autoIndent": "full",
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "editor.guides.bracketPairs": true
 }

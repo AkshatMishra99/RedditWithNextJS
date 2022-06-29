@@ -1,16 +1,22 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
-import Header from '../components/Header'
+import Feed from '../components/Feed/Feed'
+import PostBox from '../components/AddPost/PostBox'
 
 const Home: NextPage = () => {
   return (
-    <div className="">
+    <div className="bg-bgcolor">
       <Head>
         <title>Reddit 2.0</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header />
+
+      {/* Post Box */}
+      <PostBox />
+      {/* Feed */}
+      <div className="flex">
+        <Feed />
+      </div>
     </div>
   )
 }

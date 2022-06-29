@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
-import TextField, { TextFieldProps } from '@mui/material/TextField'
+import TextField from '@mui/material/TextField'
 import AutoComplete from '@mui/material/Autocomplete'
 import SearchIcon from '@mui/icons-material/Search'
 import InputAdornment from '@mui/material/InputAdornment'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { alpha, styled } from '@mui/material/styles'
-import { Input } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
 const CssTextField = styled(TextField)({
   '& label.Mui-focused': {

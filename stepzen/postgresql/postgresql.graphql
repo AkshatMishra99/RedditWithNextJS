@@ -1,0 +1,269 @@
+type Comment {
+  created_at: DateTime
+  id: ID!
+  post_id: ID
+  text: String
+  user_id: ID!
+}
+
+type Posts {
+  body: String
+  created_at: DateTime
+  id: ID!
+  image: String
+  subreddit_id: ID!
+  title: String
+  user_id: ID!
+  isOc: Boolean
+  isNSFW: Boolean
+  isSpoiler: Boolean
+  subreddit: Subreddit
+    @materializer(
+      query: "getSubredditByID"
+      arguments: [{ name: "id", field: "subreddit_id" }]
+    )
+  user: Users
+    @materializer(
+      query: "getUserByID"
+      arguments: [{ name: "id", field: "user_id" }]
+    )
+}
+
+"""
+NOTE: members: unsupported type ARRAY, field omitted
+"""
+type Subreddit {
+  created_at: DateTime
+  id: ID!
+  topic: String
+  title: String
+  members: [Users]
+    @materializer(
+      query: "getMemberList"
+      arguments: [{ name: "subreddit_id", field: "id" }]
+    )
+}
+
+type Users {
+  created_at: DateTime
+  id: ID!
+  karma: String
+  username: String
+}
+
+type Vote {
+  created_at: DateTime
+  id: ID!
+  post_id: ID
+  upvote: Int
+  user_id: ID
+}
+
+type Query {
+  # COMMENTS
+  getCommentList: [Comment]
+    @dbquery(
+      type: "postgresql"
+      table: "Comment"
+      configuration: "postgresql_config"
+    )
+
+  """
+  This query is an example of how to simply paginate your responses.
+  """
+  getPaginatedCommentList(first: Int!, after: Int!): [Comment]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "Comment" limit $1 offset $2
+      """
+      configuration: "postgresql_config"
+    )
+  """
+  In this example, a single query parameter is passed. If the request to the DB will
+  return at most one value you can remove the square brackets from the result.
+  """
+  getCommentByPost_id(post_id: ID!): [Comment]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "Comment" where "post_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  """
+  In this example, two query parameters are passed. If the request to the DB will
+  return at most one value you can remove the square brackets from the result.
+  """
+  getCommentByPost_idAndText(post_id: ID!, text: String!): [Comment]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "Comment" where "post_id" = $1 and "text" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  # COMMENTS END
+
+  # POSTS
+  getPostsList: [Posts]
+    @dbquery(
+      type: "postgresql"
+      table: "Posts"
+      configuration: "postgresql_config"
+    )
+
+  getPostByID(id: ID!): Posts
+    @dbquery(
+      type: "postgresql"
+      query: """
+      SELECT * FROM "posts" where id = $1
+      """
+      table: "Posts"
+      configuration: "postgresql_config"
+    )
+
+  # SUBREDDITS
+  getSubredditByTopic(title: String!): [Subreddit]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "Subreddit" where title = $1
+      """
+      table: "Subreddit"
+      configuration: "postgresql_config"
+    )
+  getSubredditByID(id: ID!): Subreddit
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "Subreddit" where id = $1;
+      """
+      table: "Subreddit"
+      configuration: "postgresql_config"
+    )
+
+  getSubredditList: [Subreddit]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select *, sb."members"::text as "members" from "Subreddit" as sb
+      """
+      table: "Subreddit"
+      configuration: "postgresql_config"
+    )
+
+  # USERS
+  getUsersList: [Users]
+    @dbquery(
+      type: "postgresql"
+      table: "Users"
+      configuration: "postgresql_config"
+    )
+  getVoteList: [Vote]
+    @dbquery(
+      type: "postgresql"
+      table: "Vote"
+      configuration: "postgresql_config"
+    )
+  getMemberList(subreddit_id: ID!): [Users]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "Users" as u join "Subreddit" as sr on u.id = any(sr."members") where sr.id= $1
+      """
+      configuration: "postgresql_config"
+    )
+
+  getUserByID(id: ID!): Users
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "Users" where id = $1;
+      """
+      table: "Users"
+      configuration: "postgresql_config"
+    )
+
+  getUserByUsername(username: String!): Users
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "Users" where username = $1
+      """
+      table: "Users"
+      configuration: "postgresql_config"
+    )
+}
+
+type Mutation {
+  """
+  In this mutation example you can see how to do a mutation to insert data in the database.
+  """
+  insertPosts(
+    image: String!
+    body: String!
+    title: String!
+    user_id: ID!
+    subreddit_id: ID!
+    isNSFW: Boolean!
+    isOc: Boolean!
+    isSpoiler: Boolean!
+  ): Posts
+    @dbquery(
+      type: "postgresql"
+      table: "Posts"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  """
+  In this mutation example you can see how to do a mutation to delete data from the database.
+  """
+  deletePosts(
+    image: String!
+    id: ID!
+    body: String!
+    title: String!
+    user_id: ID!
+    created_at: DateTime!
+    subreddit_id: ID!
+  ): Posts
+    @dbquery(
+      type: "postgresql"
+      table: "Posts"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+  """
+  In this mutation example you can see how to do a mutation to insert data in the database.
+  """
+  insertUsers(username: String!, karma: String!): Users
+    @dbquery(
+      type: "postgresql"
+      table: "Users"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+
+  """
+  Mutation to create a subreddit
+  """
+  insertSubreddit(title: String!): Subreddit
+    @dbquery(
+      type: "postgresql"
+      table: "Subreddit"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+
+  """
+  COMMENTS
+  """
+  insertComment(post_id: ID, text: String, user_id: ID!): Comment
+    @dbquery(
+      type: "postgresql"
+      table: "Comment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+}
