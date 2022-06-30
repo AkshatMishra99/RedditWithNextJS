@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactTimeAgo from 'react-time-ago'
 
-import { BiDownvote, BiUpvote } from 'react-icons/bi'
+import { TbArrowBigDown, TbArrowBigTop } from 'react-icons/tb'
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech'
 import { Card } from '@mui/material'
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
@@ -11,6 +11,9 @@ import CommentBox from '../Reusable/CommentBox'
 import { signIn, useSession } from 'next-auth/react'
 import { ADD_COMMENT } from '../../graphql/mutations'
 import client from '../../apollo-client'
+import Comments from '../Comment/Comments'
+import { GET_COMMENTS_BY_POST_ID } from '../../graphql/queries'
+import { useQuery } from '@apollo/client'
 
 interface Props {
   post: Post
@@ -31,7 +34,7 @@ function Post({ post }: Props) {
     }
   }
   const handleComment = async () => {
-    console.log(comment)
+    if (!comment?.match(/[\S]*/)) return
     if (session?.user && session?.user?.id) {
       setLoading(true)
       const {
@@ -43,22 +46,42 @@ function Post({ post }: Props) {
           user_id: session?.user?.id!,
           text: comment,
         },
+
+        refetchQueries: [
+          { query: GET_COMMENTS_BY_POST_ID, variables: { postId: post.id } }, // DocumentNode object parsed with gql
+        ],
       })
-      console.log(addedComment)
       setComment(null)
       setLoading(false)
-      setCommentDisabled(false)
+      setCommentDisabled(true)
     }
   }
+
+  const {
+    loading: commentsLoading,
+    error,
+    data,
+  } = useQuery(GET_COMMENTS_BY_POST_ID, {
+    variables: { postId: post.id },
+  })
+
+  const comments = data?.getCommentByPost_id
 
   return (
     <Card className="flex h-max min-h-[110px] flex-col rounded-md border-[1px] border-[#cccccc] pt-3 shadow-none hover:border-gray-400">
       <div className="flex flex-1 flex-row">
-        <div className="w-[7%] ">
-          <div className="flex flex-col items-center justify-center p-2 pt-5 text-upvote">
-            <BiUpvote className="cursor-pointer hover:bg-gray-200 hover:text-red-400" />
+        <div className="w-[7%]">
+          <div className="flex flex-col items-center justify-center p-2 text-base text-upvote">
+            <TbArrowBigTop
+              size={28}
+              className="cursor-pointer hover:bg-gray-200 hover:text-red-400"
+            />
+
             <span className="text-sm font-bold text-black">0</span>
-            <BiDownvote className="cursor-pointer hover:bg-gray-200 hover:text-blue-400" />
+            <TbArrowBigDown
+              size={28}
+              className="cursor-pointer hover:bg-gray-200 hover:text-blue-400"
+            />
           </div>
         </div>
         <div className="flex-1  bg-white">
@@ -66,9 +89,7 @@ function Post({ post }: Props) {
             {/* Subreddit Title */}
             <div className="flex items-center space-x-1 text-xs text-[#8d8d8d]">
               <div>Posted by u/{post.user.username}</div>
-              <div>
-                <ReactTimeAgo date={post.created_at} locale="en-US" />
-              </div>
+              <div></div>
             </div>
           </div>
           {/* Post title */}
@@ -146,7 +167,7 @@ function Post({ post }: Props) {
       <div className="my-3 mx-auto w-[90%]">
         <hr className="h-2 w-full text-gray-400" />
       </div>
-      <div>Comments</div>
+      <Comments comments={comments} />
     </Card>
   )
 }

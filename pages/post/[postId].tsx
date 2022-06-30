@@ -29,7 +29,7 @@ function PostPage() {
     getPost()
   }, [postId])
   return (
-    <div className="h-full bg-bgcolor p-5">
+    <div className="min-h-full bg-bgcolor p-5">
       <Head>
         <title>{post?.title}</title>
       </Head>

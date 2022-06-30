@@ -26,3 +26,12 @@ interface Post {
   user: Users
   created_at: date
 }
+
+interface Comment {
+  created_at: date
+  id: number
+  post_id: number
+  text: string
+  user_id: number
+  user: Users
+}

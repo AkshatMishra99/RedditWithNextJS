@@ -26,7 +26,7 @@ export const ReusableEditor: React.FC<EditorProps> = ({
       setValue(EditorState.createEmpty())
     }
   }, [inValue])
-  console.log('this is the incoming value', inValue)
+  // console.log('this is the incoming value', inValue)
   const onChange = (newValue: EditorState) => {
     setValue(newValue)
     onValueChange(newValue.getCurrentContent().getPlainText('\u0001'))
@@ -38,7 +38,7 @@ export const ReusableEditor: React.FC<EditorProps> = ({
         onEditorStateChange={onChange}
         placeholder={placeholder}
         wrapperClassName=""
-        editorClassName="border-[1px] p-300 !h-[170px]"
+        editorClassName="border-[1px] p-3 !h-[170px] !min-h-min"
         toolbarClassName=""
       />
     )

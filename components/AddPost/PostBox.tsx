@@ -9,6 +9,7 @@ import CheckIcon from '@heroicons/react/solid/CheckIcon'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQuery } from '@apollo/client'
 import {
+  GET_ALL_POSTS,
   GET_ALL_SUBREDDITS,
   GET_SUBREDDIT_BY_TOPIC,
 } from '../../graphql/queries'
@@ -76,7 +77,11 @@ function PostBox() {
   const { loading, error, data: subs } = useQuery(GET_ALL_SUBREDDITS)
 
   // Mutation to insert post
-  const [createPost] = useMutation(ADD_POST)
+  const [createPost] = useMutation(ADD_POST, {
+    refetchQueries: [
+      { query: GET_ALL_POSTS }, // DocumentNode object parsed with gql
+    ],
+  })
   const [createSubreddit] = useMutation(ADD_SUBREDDIT)
   const [imageBoxOpen, setImageBoxOpen] = useState<boolean>(false)
   const [atts, setAtts] = useState<Attributes>({

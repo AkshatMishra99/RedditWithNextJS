@@ -5,30 +5,11 @@ import _ from 'lodash'
 import Post from './Post'
 import FeedLoader from '../Reusable/FeedLoader'
 import Moment from 'moment'
+import { useQuery } from '@apollo/client'
 
 function Feed() {
-  const [feed, setFeed] = useState<Array<Post>>([])
-  const [loading, setLoading] = useState<boolean>(false)
-
-  useEffect(() => {
-    const getFeed = async () => {
-      const {
-        data: { getPostsList: feedRes },
-      } = await client.query({
-        query: GET_ALL_POSTS,
-      })
-      if (feedRes) {
-        const sortedFeeds = _.reverse(
-          _.sortBy(feedRes, (post) => Moment(post.created_at))
-        )
-        setFeed({ ...sortedFeeds })
-      }
-      setLoading(false)
-    }
-    setLoading(true)
-    getFeed()
-  }, [])
-  // console.log(feed, loading)
+  const { loading, error, data } = useQuery(GET_ALL_POSTS)
+  const feed = _.reverse(_.sortBy(data?.getPostsList, 'created_at'))
   return (
     <div className="mt-[30px] flex flex-1 justify-center text-2xl">
       {!loading && feed && (

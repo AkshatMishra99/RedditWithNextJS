@@ -22,7 +22,7 @@ function Post({ post }: Props) {
     <Link href={`/post/${post.id}`}>
       <Card className="my-4 flex h-max min-h-[110px] cursor-pointer flex-row rounded-md border-[1px] border-[#cccccc] shadow-none hover:border-gray-400">
         <div className="w-[7%] bg-graycolor">
-          <div className="flex flex-col items-center justify-center p-2 pt-5 text-upvote">
+          <div className="flex flex-col items-center justify-center p-2 pt-2 text-upvote">
             <BiUpvote className="hover:bg-gray-200 hover:text-red-400" />
             <span className="text-sm font-bold text-black">0</span>
             <BiDownvote className="hover:bg-gray-200 hover:text-blue-400" />

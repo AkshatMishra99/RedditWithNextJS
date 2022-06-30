@@ -92,3 +92,21 @@ export const GET_USER_BY_NAME = gql`
     }
   }
 `
+
+export const GET_COMMENTS_BY_POST_ID = gql`
+  query MyQuery($postId: ID!) {
+    getCommentByPost_id(post_id: $postId) {
+      created_at
+      id
+      post_id
+      text
+      user_id
+      user {
+        created_at
+        id
+        karma
+        username
+      }
+    }
+  }
+`

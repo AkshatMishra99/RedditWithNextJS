@@ -4,6 +4,11 @@ type Comment {
   post_id: ID
   text: String
   user_id: ID!
+  user: Users
+    @materializer(
+      query: "getUserByID"
+      arguments: [{ name: "id", field: "user_id" }]
+    )
 }
 
 type Posts {
@@ -87,7 +92,7 @@ type Query {
     @dbquery(
       type: "postgresql"
       query: """
-      select * from "Comment" where "post_id" = $1
+      select * from "Comment" where "post_id" = $1 order by "created_at" desc
       """
       configuration: "postgresql_config"
     )
@@ -110,6 +115,9 @@ type Query {
     @dbquery(
       type: "postgresql"
       table: "Posts"
+      query: """
+      select * from "Posts" order by "created_at" desc;
+      """
       configuration: "postgresql_config"
     )
 
