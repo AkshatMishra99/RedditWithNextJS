@@ -56,6 +56,36 @@ export const ADD_COMMENT = gql`
     }
   }
 `
+export const ADD_VOTE = gql`
+  mutation MyMutation(
+    $post_id: ID
+    $comment_id: ID
+    $user_id: ID!
+    $upvote: Boolean!
+  ) {
+    addVote(
+      post_id: $post_id
+      comment_id: $comment_id
+      user_id: $user_id
+      upvote: $upvote
+    ) {
+      created_at
+      id
+      post_id
+      upvote
+      user_id
+      comment_id
+    }
+  }
+`
+
+export const DELETE_VOTE = gql`
+  mutation MyMutaiton($vote_id: ID!) {
+    deleteVoteByVoteID(id: $vote_id) {
+      id
+    }
+  }
+`
 
 export const ADD_USER = gql`
   mutation MyMutation($username: String!, $karma: String!) {

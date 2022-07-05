@@ -3,15 +3,13 @@ import Link from 'next/link'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 
 import ReactTimeAgo from 'react-time-ago'
-
-import { BiDownvote, BiUpvote } from 'react-icons/bi'
+import Upvote from '../Upvote/Upvote'
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech'
 import { Card } from '@mui/material'
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
 import ShareIcon from '@mui/icons-material/Share'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import RedditAvatar from '../Reusable/RedditAvatar'
-import Head from 'next/head'
 interface Props {
   post: Post
 }
@@ -19,15 +17,12 @@ interface Props {
 function Post({ post }: Props) {
   // console.log(post)
   return (
-    <Link href={`/post/${post.id}`}>
-      <Card className="my-4 flex h-max min-h-[110px] cursor-pointer flex-row rounded-md border-[1px] border-[#cccccc] shadow-none hover:border-gray-400">
-        <div className="w-[7%] bg-graycolor">
-          <div className="flex flex-col items-center justify-center p-2 pt-2 text-upvote">
-            <BiUpvote className="hover:bg-gray-200 hover:text-red-400" />
-            <span className="text-sm font-bold text-black">0</span>
-            <BiDownvote className="hover:bg-gray-200 hover:text-blue-400" />
-          </div>
-        </div>
+    <Card className="my-4 flex h-max min-h-[110px] cursor-pointer flex-row rounded-md border-[1px] border-[#cccccc] shadow-none hover:border-gray-400">
+      <div className="w-[7%] bg-graycolor">
+        <Upvote votes={post.votes} postId={post.id} />
+      </div>
+
+      <Link href={`/post/${post.id}`}>
         <div className="flex-1 bg-white">
           <div className="my-1 flex flex-1 flex-row items-center justify-start space-x-1 pl-2">
             <div className="mr-2 w-[5%]">
@@ -87,8 +82,8 @@ function Post({ post }: Props) {
             </div>
           </div>
         </div>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   )
 }
 

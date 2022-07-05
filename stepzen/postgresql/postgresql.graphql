@@ -9,6 +9,11 @@ type Comment {
       query: "getUserByID"
       arguments: [{ name: "id", field: "user_id" }]
     )
+  votes: [Vote]
+    @materializer(
+      query: "getVotesByCommentID"
+      arguments: [{ name: "comment_id", field: "id" }]
+    )
 }
 
 type Posts {
@@ -31,6 +36,11 @@ type Posts {
     @materializer(
       query: "getUserByID"
       arguments: [{ name: "id", field: "user_id" }]
+    )
+  votes: [Vote]
+    @materializer(
+      query: "getVotesByPostID"
+      arguments: [{ name: "post_id", field: "id" }]
     )
 }
 
@@ -60,8 +70,9 @@ type Vote {
   created_at: DateTime
   id: ID!
   post_id: ID
-  upvote: Int
+  upvote: Boolean
   user_id: ID
+  comment_id: ID
 }
 
 type Query {
@@ -202,6 +213,28 @@ type Query {
       table: "Users"
       configuration: "postgresql_config"
     )
+
+  # VOTES
+
+  getVotesByPostID(post_id: String!): [Vote]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "Vote" where "post_id" = $1;
+      """
+      table: "Vote"
+      configuration: "postgresql_config"
+    )
+
+  getVotesByCommentID(comment_id: String!): [Vote]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "Vote" where "comment_id" = $1;
+      """
+      table: "Vote"
+      configuration: "postgresql_config"
+    )
 }
 
 type Mutation {
@@ -272,6 +305,25 @@ type Mutation {
       type: "postgresql"
       table: "Comment"
       dml: INSERT
+      configuration: "postgresql_config"
+    )
+
+  """
+  VOTES
+  """
+  addVote(post_id: ID, comment_id: ID, user_id: ID!, upvote: Boolean!): Vote
+    @dbquery(
+      type: "postgresql"
+      table: "Vote"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+
+  deleteVoteByVoteID(id: ID!): Vote
+    @dbquery(
+      type: "postgresql"
+      table: "Vote"
+      dml: DELETE
       configuration: "postgresql_config"
     )
 }

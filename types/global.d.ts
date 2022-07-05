@@ -25,6 +25,7 @@ interface Post {
   subreddit: Subreddit
   user: Users
   created_at: date
+  votes: Votes
 }
 
 interface Comment {
@@ -34,4 +35,12 @@ interface Comment {
   text: string
   user_id: number
   user: Users
+}
+
+interface Vote {
+  created_at: date
+  id: number
+  post_id: number
+  user_id: string
+  upvote: boolean
 }

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ReactTimeAgo from 'react-time-ago'
 
-import { TbArrowBigDown, TbArrowBigTop } from 'react-icons/tb'
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech'
 import { Card } from '@mui/material'
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
@@ -14,13 +13,14 @@ import client from '../../apollo-client'
 import Comments from '../Comment/Comments'
 import { GET_COMMENTS_BY_POST_ID } from '../../graphql/queries'
 import { useQuery } from '@apollo/client'
-
+import Upvote from '../Upvote/Upvote'
+import toast, { Toaster } from 'react-hot-toast'
 interface Props {
   post: Post
 }
 
 function Post({ post }: Props) {
-  // console.log(post)
+  console.log(post)
   const { data: session } = useSession()
   const [comment, setComment] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -37,6 +37,7 @@ function Post({ post }: Props) {
     if (!comment?.match(/[\S]*/)) return
     if (session?.user && session?.user?.id) {
       setLoading(true)
+      const notification = toast.loading('Adding comment...')
       const {
         data: { insertComment: addedComment },
       } = await client.mutate({
@@ -53,6 +54,7 @@ function Post({ post }: Props) {
       })
       setComment(null)
       setLoading(false)
+      toast.success('Comment has been added!', { id: notification })
       setCommentDisabled(true)
     }
   }
@@ -71,18 +73,7 @@ function Post({ post }: Props) {
     <Card className="flex h-max min-h-[110px] flex-col rounded-md border-[1px] border-[#cccccc] pt-3 shadow-none hover:border-gray-400">
       <div className="flex flex-1 flex-row">
         <div className="w-[7%]">
-          <div className="flex flex-col items-center justify-center p-2 text-base text-upvote">
-            <TbArrowBigTop
-              size={28}
-              className="cursor-pointer hover:bg-gray-200 hover:text-red-400"
-            />
-
-            <span className="text-sm font-bold text-black">0</span>
-            <TbArrowBigDown
-              size={28}
-              className="cursor-pointer hover:bg-gray-200 hover:text-blue-400"
-            />
-          </div>
+          <Upvote votes={post.votes} postId={post.id} />
         </div>
         <div className="flex-1  bg-white">
           <div className="my-1 flex flex-1 flex-row items-center justify-start space-x-1 pl-2">
@@ -103,28 +94,28 @@ function Post({ post }: Props) {
           {/* Post Footer */}
           <div className="m-1 flex space-x-3 py-1 px-[1px] text-xs text-upvote">
             {/* Comments */}
-            <div className="flex space-x-1 rounded-sm p-1 font-bold hover:bg-gray-200">
+            <div className="flex cursor-pointer space-x-1 rounded-sm p-1 font-bold hover:bg-gray-200">
               <div>
                 <ChatBubbleOutlineIcon fontSize="small" />
               </div>
-              <div>0 Comments</div>
+              <div>{comments?.length} Comments</div>
             </div>
             {/* Award */}
-            <div className="flex space-x-1 rounded-sm p-1 font-bold hover:bg-gray-200">
+            <div className="flex cursor-pointer space-x-1 rounded-sm p-1 font-bold hover:bg-gray-200">
               <div>
                 <MilitaryTechIcon fontSize="small" />
               </div>
               <div>Award</div>
             </div>
             {/* Share */}
-            <div className="flex space-x-1 rounded-sm p-1 font-bold hover:bg-gray-200">
+            <div className="flex cursor-pointer space-x-1 rounded-sm p-1 font-bold hover:bg-gray-200">
               <div className="">
                 <ShareIcon fontSize="small" />
               </div>
               <div>Share</div>
             </div>
             {/* Save */}
-            <div className="flex space-x-1 rounded-sm p-1 font-bold hover:bg-gray-200">
+            <div className="flex cursor-pointer space-x-1 rounded-sm p-1 font-bold hover:bg-gray-200">
               <div className="">
                 <BookmarkBorderIcon fontSize="small" />
               </div>
@@ -168,6 +159,7 @@ function Post({ post }: Props) {
         <hr className="h-2 w-full text-gray-400" />
       </div>
       <Comments comments={comments} />
+      <Toaster />
     </Card>
   )
 }

@@ -52,6 +52,13 @@ export const GET_ALL_POSTS = gql`
         karma
         username
       }
+      votes {
+        created_at
+        id
+        post_id
+        upvote
+        user_id
+      }
     }
   }
 `
@@ -78,6 +85,13 @@ export const GET_POST_BY_ID = gql`
         id
         karma
         username
+      }
+      votes {
+        created_at
+        id
+        post_id
+        upvote
+        user_id
       }
     }
   }
@@ -107,6 +121,19 @@ export const GET_COMMENTS_BY_POST_ID = gql`
         karma
         username
       }
+    }
+  }
+`
+
+export const GET_VOTES_BY_POST_ID = gql`
+  query MyQuery($postId: String!) {
+    getVotesByPostID(post_id: $postId) {
+      id
+      post_id
+      upvote
+      user_id
+      created_at
+      comment_id
     }
   }
 `

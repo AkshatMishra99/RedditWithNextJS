@@ -2,6 +2,7 @@ import { Backdrop } from '@mui/material'
 import dynamic from 'next/dynamic'
 import React, { useState } from 'react'
 import { SpinnerDotted } from 'spinners-react'
+import SpinnerWithBackdrop from './SpinnerWithBackdrop'
 // import RichTextEditorReusable from './RichTextEditorReusable'
 // import { EditorValue } from 'react-rte'
 
@@ -52,18 +53,7 @@ function CommentBox(props: Props) {
           {loading && <div>Loading</div>}
         </button>
       </div>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-      >
-        <SpinnerDotted
-          size={100}
-          thickness={150}
-          speed={100}
-          color="#fe4500"
-          // secondaryColor="rgba(0, 0, 0, 1)"
-        />
-      </Backdrop>
+      <SpinnerWithBackdrop loading={loading} />
     </div>
   )
 }
