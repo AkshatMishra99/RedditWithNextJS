@@ -42,6 +42,11 @@ type Posts {
       query: "getVotesByPostID"
       arguments: [{ name: "post_id", field: "id" }]
     )
+  comments: [Comment]
+    @materializer(
+      query: "getCommentByPost_id"
+      arguments: [{ name: "post_id", field: "id" }]
+    )
 }
 
 """

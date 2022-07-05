@@ -26,6 +26,7 @@ interface Post {
   user: Users
   created_at: date
   votes: Votes
+  comments: Comment[]
 }
 
 interface Comment {

@@ -337,7 +337,6 @@ function PostBox() {
           )}
         </div>
       )}
-      <Toaster />
     </form>
   )
 }

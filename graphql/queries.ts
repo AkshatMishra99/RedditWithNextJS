@@ -59,6 +59,19 @@ export const GET_ALL_POSTS = gql`
         upvote
         user_id
       }
+      comments {
+        created_at
+        id
+        post_id
+        text
+        user_id
+        user {
+          created_at
+          id
+          karma
+          username
+        }
+      }
     }
   }
 `
@@ -92,6 +105,19 @@ export const GET_POST_BY_ID = gql`
         post_id
         upvote
         user_id
+      }
+      comments {
+        created_at
+        id
+        post_id
+        text
+        user_id
+        user {
+          created_at
+          id
+          karma
+          username
+        }
       }
     }
   }

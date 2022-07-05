@@ -91,6 +91,17 @@ function Post({ post }: Props) {
           {/* Post Body */}
           <div className="pl-2 text-sm">{post.body}</div>
 
+          {/* Post Image */}
+          <div className="flex justify-center bg-gray-100">
+            <a href={post.image}>
+              <img
+                className="max-h-[600px] object-contain"
+                src={post.image}
+                alt=""
+              />
+            </a>
+          </div>
+
           {/* Post Footer */}
           <div className="m-1 flex space-x-3 py-1 px-[1px] text-xs text-upvote">
             {/* Comments */}
@@ -159,7 +170,6 @@ function Post({ post }: Props) {
         <hr className="h-2 w-full text-gray-400" />
       </div>
       <Comments comments={comments} />
-      <Toaster />
     </Card>
   )
 }

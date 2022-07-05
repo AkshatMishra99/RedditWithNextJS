@@ -50,6 +50,15 @@ function Post({ post }: Props) {
           {/* Post Body */}
           <div className="pl-2 text-sm">{post.body}</div>
 
+          {/* Post Image */}
+          <div className="flex justify-center bg-gray-100">
+            <img
+              className="max-h-[600px] object-contain"
+              src={post.image}
+              alt=""
+            />
+          </div>
+
           {/* Post Footer */}
           <div className="m-1 flex space-x-3 py-1 px-[1px] text-xs text-upvote">
             {/* Comments */}
@@ -57,7 +66,7 @@ function Post({ post }: Props) {
               <div>
                 <ChatBubbleOutlineIcon fontSize="small" />
               </div>
-              <div>0 Comments</div>
+              <div>{post?.comments?.length} Comments</div>
             </div>
             {/* Award */}
             <div className="flex space-x-1 rounded-sm p-1 font-bold hover:bg-gray-200">

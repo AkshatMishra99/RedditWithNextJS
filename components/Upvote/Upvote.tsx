@@ -78,7 +78,8 @@ function Upvote(props: Props) {
   // console.log(hasCurrentUserVoted, data, session)
   // const upvotes=votes.reduce
   const calculateUpvotes = (votes: Vote[]) => {
-    return _.reduce(
+    console.log(votes)
+    let votesCount: String | number = _.reduce(
       votes,
       (acc, curr) => {
         if (curr.upvote) {
@@ -88,6 +89,10 @@ function Upvote(props: Props) {
       },
       0
     )
+    if (votesCount > 10000) {
+      votesCount = `${_.round(votesCount / 1000, 2)}k`
+    }
+    return votesCount
   }
 
   const onVote = async (upvote: Boolean) => {
@@ -146,7 +151,6 @@ function Upvote(props: Props) {
           onClick={onVote.bind(null, false)}
         />
       )}
-      <Toaster />
       <SpinnerWithBackdrop loading={commentsLoading} />
     </div>
   )

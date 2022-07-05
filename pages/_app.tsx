@@ -8,6 +8,7 @@ import client from '../apollo-client'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en.json'
 import { UserProvider } from '../appContext'
+import { Toaster } from 'react-hot-toast'
 
 // TimeAgo.addDefaultLocale(en)
 TimeAgo.addLocale(en)
@@ -19,6 +20,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
           <div className="h-screen overflow-y-scroll ">
             <Header />
             <Component {...pageProps} />
+            <Toaster />
           </div>
         </SessionProvider>
       </ApolloProvider>
