@@ -181,3 +181,16 @@ export const GET_VOTES_BY_POST_ID = gql`
     }
   }
 `
+
+export const GET_VOTES_BY_COMMENT_ID = gql`
+  query MyQuery($commentId: String!) {
+    getVotesByCommentID(comment_id: $commentId) {
+      id
+      post_id
+      upvote
+      user_id
+      created_at
+      comment_id
+    }
+  }
+`

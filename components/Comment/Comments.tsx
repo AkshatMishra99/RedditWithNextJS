@@ -15,7 +15,7 @@ function Comments(props: PropType) {
   return (
     <div>
       {comments?.map((comment: Comment) => (
-        <SingleComment comment={comment} />
+        <SingleComment key={comment.id} comment={comment} />
       ))}
     </div>
   )

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { TbArrowBigDown, TbArrowBigTop } from 'react-icons/tb'
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import ReactTimeAgo from 'react-time-ago'
 import Avatar from '../Reusable/Avatar'
 import { useSession } from 'next-auth/react'
@@ -15,6 +14,9 @@ import {
 } from '../../graphql/queries'
 import { useQuery } from '@apollo/client'
 import Comments from './Comments'
+import CommentOptions from '../Reusable/CommentOptions'
+import CommentUpvote from '../Upvote/CommentUpvote'
+import CommentLoader from '../Reusable/CommentLoader'
 
 interface PropTypes {
   comment: Comment
@@ -28,7 +30,6 @@ function Comment(props: PropTypes) {
   const [loading, setLoading] = useState(false)
   const [commentDisabled, setCommentDisabled] = useState(true)
   const onReplyHandler = () => {
-    console.log('Clicked reply!!')
     setIsReplying((value) => !value)
   }
 
@@ -61,7 +62,6 @@ function Comment(props: PropTypes) {
           }, // DocumentNode object parsed with gql
         ],
       })
-      console.log('here is the added comment=======', addedChildComment)
 
       const {
         data: { addCommentThread: addedCommentThread },
@@ -72,7 +72,6 @@ function Comment(props: PropTypes) {
           parent_id: comment.id,
         },
       })
-      console.log('here is the added comment thread=======', addedCommentThread)
       setChildComment(null)
       setLoading(false)
       toast.success('Comment has been added!', { id: notification })
@@ -89,7 +88,6 @@ function Comment(props: PropTypes) {
   })
 
   const childComments = data?.getCommentByParentComment_ID
-  console.log('here are child comments', childComments)
 
   return (
     <div className="my-5 flex-col justify-start ">
@@ -106,18 +104,7 @@ function Comment(props: PropTypes) {
         <div className=" text-sm">{comment.text}</div>
         <div className="flex items-center justify-start space-x-0.5 text-upvote">
           {/* VotesCount */}
-          <div className="flex flex-row items-center space-x-1 p-2 pl-0 text-base ">
-            <TbArrowBigTop
-              size={23}
-              className="cursor-pointer hover:bg-gray-200 hover:text-red-400"
-            />
-
-            <span className="text-xs font-bold text-black">Vote</span>
-            <TbArrowBigDown
-              size={23}
-              className="cursor-pointer hover:bg-gray-200 hover:text-blue-400"
-            />
-          </div>
+          <CommentUpvote commentId={comment.id} />
           {/* Reply */}
           <div
             className="flex cursor-pointer items-center justify-between space-x-1 rounded-sm p-1 hover:bg-gray-200"
@@ -128,32 +115,8 @@ function Comment(props: PropTypes) {
             </div>
             <div className="text-xs font-semibold text-upvote">Reply</div>
           </div>
-          {/* Award */}
-          <div className="hidden cursor-pointer items-center justify-between space-x-1 rounded-sm p-2 hover:bg-gray-200 lg:flex">
-            <div className="text-xs font-semibold text-upvote">Give award</div>
-          </div>
-          {/* Share */}
-          <div className="flex cursor-pointer items-center justify-between space-x-1 rounded-sm p-2 hover:bg-gray-200">
-            <div className="text-xs font-semibold text-upvote">Share</div>
-          </div>
-          {/* Report */}
-          <div className="x hidden cursor-pointer items-center justify-between space-x-1 rounded-sm p-2 hover:bg-gray-200">
-            <div className="text-xs font-semibold text-upvote">Report</div>
-          </div>
-          {/* Save */}
-          <div className="hidden cursor-pointer items-center justify-between space-x-1 rounded-sm p-2 hover:bg-gray-200 lg:flex">
-            <div className="text-xs font-semibold text-upvote">Save</div>
-          </div>
-          {/* Follow */}
-          <div className="hidden cursor-pointer items-center justify-between space-x-1 rounded-sm p-2 hover:bg-gray-200 lg:flex">
-            <div className="text-xs font-semibold text-upvote">Follow</div>
-          </div>
-          {/* Follow */}
-          <div className="flex cursor-pointer items-center justify-between space-x-1 rounded-sm p-1 hover:bg-gray-200 lg:hidden">
-            <div className="text-xs font-semibold text-upvote">
-              <MoreHorizIcon />
-            </div>
-          </div>
+
+          <CommentOptions />
         </div>
         {/* Invisible comment box opens when toggled */}
         {isReplying && (
@@ -182,7 +145,8 @@ function Comment(props: PropTypes) {
 
         {/* Children Comments thread */}
         <div className="">
-          <Comments comments={childComments} />
+          {!commentsLoading && <Comments comments={childComments} />}
+          {commentsLoading && <CommentLoader />}
         </div>
       </div>
     </div>
