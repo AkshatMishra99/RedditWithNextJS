@@ -34,7 +34,7 @@ function PostPage() {
         <title>{post?.title}</title>
       </Head>
       <div className="flex justify-center">
-        <div className="sm:w-[98%] md:w-[80%] lg:w-[50%]">
+        <div className="sm:w-[98%] md:w-[80%] lg:w-[60%]">
           <div>{!loading && post && <Post post={post} />}</div>
         </div>
       </div>

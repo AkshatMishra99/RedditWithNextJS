@@ -109,28 +109,29 @@ function Post({ post }: Props) {
               <div>
                 <ChatBubbleOutlineIcon fontSize="small" />
               </div>
-              <div>{comments?.length} Comments</div>
+              <div>{comments?.length}</div>
+              <p>Comments</p>
             </div>
             {/* Award */}
             <div className="flex cursor-pointer space-x-1 rounded-sm p-1 font-bold hover:bg-gray-200">
               <div>
                 <MilitaryTechIcon fontSize="small" />
               </div>
-              <div>Award</div>
+              <p className="hidden sm:inline">Award</p>
             </div>
             {/* Share */}
             <div className="flex cursor-pointer space-x-1 rounded-sm p-1 font-bold hover:bg-gray-200">
               <div className="">
                 <ShareIcon fontSize="small" />
               </div>
-              <div>Share</div>
+              <p className="hidden sm:inline">Share</p>
             </div>
             {/* Save */}
             <div className="flex cursor-pointer space-x-1 rounded-sm p-1 font-bold hover:bg-gray-200">
               <div className="">
                 <BookmarkBorderIcon fontSize="small" />
               </div>
-              <div>Save</div>
+              <p className="hidden sm:inline">Save</p>
             </div>
           </div>
 
@@ -169,7 +170,9 @@ function Post({ post }: Props) {
       <div className="my-3 mx-auto w-[90%]">
         <hr className="h-2 w-full text-gray-400" />
       </div>
-      <Comments comments={comments} />
+      <div className="ml-5">
+        <Comments comments={comments} />
+      </div>
     </Card>
   )
 }

@@ -97,3 +97,29 @@ export const ADD_USER = gql`
     }
   }
 `
+
+export const ADD_CHILD_COMMENT = gql`
+  mutation MyMutation($parent_comment: ID!, $text: String!, $user_id: ID!) {
+    addSubCommentByParentID(
+      parent_comment: $parent_comment
+      text: $text
+      user_id: $user_id
+    ) {
+      id
+      post_id
+      text
+      user_id
+      created_at
+    }
+  }
+`
+
+export const ADD_COMMENT_THREAD = gql`
+  mutation MyMutation($child_id: ID!, $parent_id: ID!) {
+    addCommentThread(child_id: $child_id, parent_id: $parent_id) {
+      child_id
+      created_at
+      parent_id
+    }
+  }
+`

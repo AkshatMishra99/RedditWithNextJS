@@ -151,6 +151,24 @@ export const GET_COMMENTS_BY_POST_ID = gql`
   }
 `
 
+export const GET_COMMENTS_BY_PARENT_COMMENT = gql`
+  query MyQuery($parent_comment: ID!) {
+    getCommentByParentComment_ID(parent_comment: $parent_comment) {
+      created_at
+      id
+      post_id
+      text
+      user_id
+      user {
+        created_at
+        id
+        karma
+        username
+      }
+    }
+  }
+`
+
 export const GET_VOTES_BY_POST_ID = gql`
   query MyQuery($postId: String!) {
     getVotesByPostID(post_id: $postId) {

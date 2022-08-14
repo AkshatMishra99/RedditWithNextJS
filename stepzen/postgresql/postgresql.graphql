@@ -80,6 +80,12 @@ type Vote {
   comment_id: ID
 }
 
+type CommentThread {
+  child_id: ID!
+  parent_id: ID!
+  created_at: DateTime
+}
+
 type Query {
   # COMMENTS
   getCommentList: [Comment]
@@ -112,6 +118,17 @@ type Query {
       """
       configuration: "postgresql_config"
     )
+
+  # QUERY TO GET COMMENTS BY PARENT_COMMENT
+  getCommentByParentComment_ID(parent_comment: ID!): [Comment]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "Comment" where "parent_comment" = $1 order by "created_at" desc
+      """
+      configuration: "postgresql_config"
+    )
+
   """
   In this example, two query parameters are passed. If the request to the DB will
   return at most one value you can remove the square brackets from the result.
@@ -309,6 +326,29 @@ type Mutation {
     @dbquery(
       type: "postgresql"
       table: "Comment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+
+  addSubCommentByParentID(
+    text: String!
+    user_id: ID!
+    parent_comment: ID!
+  ): Comment
+    @dbquery(
+      type: "postgresql"
+      table: "Comment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+
+  """
+  COMMENT THREAD
+  """
+  addCommentThread(child_id: ID!, parent_id: ID!): CommentThread
+    @dbquery(
+      type: "postgresql"
+      table: "comment_thread"
       dml: INSERT
       configuration: "postgresql_config"
     )
